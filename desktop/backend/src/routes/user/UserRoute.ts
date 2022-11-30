@@ -19,7 +19,13 @@ export const UserRoute = {
       method: "get",
       route: "/find/:id",
       controller: UserController,
-      action: "findallgenres",
+      action: "finduserbyid",
+    },
+    {
+      method: "get",
+      route: "/find",
+      controller: UserController,
+      action: "findall",
     },
     {
       method: "put",

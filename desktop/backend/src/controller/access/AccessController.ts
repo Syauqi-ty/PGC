@@ -13,7 +13,7 @@ export class AccessController {
 
   async createaccess(request: Request, response: Response, next: NextFunction) {
     let body = request.body;
-    if (CheckBody(body, ["username", "code_device"], ["number", "string"])) {
+    if (CheckBody(body, ["username", "code_device"], ["string", "string"])) {
       let usercheck = await this.userRepository.findOne({
         where: {
           username: body.username,
@@ -29,7 +29,17 @@ export class AccessController {
         send.device_id = devicecheck.id;
         send.user_id = usercheck.id;
         try {
-          await this.accessRepository.save(send);
+          let accesscheck = await this.accessRepository.findOne({
+            where: { device_id: send.device_id, user_id: send.user_id },
+          });
+          if (accesscheck !== undefined) {
+            return ErrHand("Access Already Exist", 402, response, 2);
+          } else {
+            await this.accessRepository.save(send);
+            return {
+              msg: "success created access",
+            };
+          }
         } catch (error) {
           return ErrHand(error, 406, response, 4);
         }
@@ -42,7 +52,7 @@ export class AccessController {
   }
   async deleteaccess(request: Request, response: Response, next: NextFunction) {
     let body = request.body;
-    if (CheckBody(body, ["username", "code_device"], ["number", "string"])) {
+    if (CheckBody(body, ["username", "code_device"], ["string", "string"])) {
       let usercheck = await this.userRepository.findOne({
         where: {
           username: body.username,
@@ -67,6 +77,9 @@ export class AccessController {
 
         try {
           await this.accessRepository.remove(deletedaccess);
+          return {
+            msg: "access deleted",
+          };
         } catch (error) {
           return ErrHand(error, 406, response, 4);
         }

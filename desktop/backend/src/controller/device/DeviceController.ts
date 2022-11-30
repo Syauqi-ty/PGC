@@ -38,19 +38,27 @@ export class DeviceController {
 
   async finddevicebyuserid(request: Request, response: Response) {
     let id = request.params["id"];
-    let arraydevice = [];
+    var arraydevice = [];
+    let data = {};
     let existCheck = await this.accesRepository.find({
       where: [{ user_id: id }],
     });
     if (existCheck !== undefined) {
       if (existCheck.length === 1) {
         return {
-          data: existCheck[0].devices,
+          data: await this.deviceRepository.findOne({
+            where: { id: existCheck[0].device_id },
+          }),
         };
       } else if (existCheck.length > 1) {
-        existCheck.forEach((element) => {
-          arraydevice.push(element.devices);
-        });
+        await Promise.all(
+          existCheck.map(async (element) => {
+            data = await this.deviceRepository.findOne({
+              where: { id: element.device_id },
+            });
+            arraydevice.push(data);
+          })
+        );
         return {
           data: arraydevice,
         };

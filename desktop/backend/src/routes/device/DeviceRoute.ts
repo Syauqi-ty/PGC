@@ -10,12 +10,6 @@ export const DeviceRoute = {
       action: "create",
     },
     {
-      method: "post",
-      route: "/subgenre/create",
-      controller: DeviceController,
-      action: "createsubgen",
-    },
-    {
       method: "get",
       route: "/list/:id",
       controller: DeviceController,

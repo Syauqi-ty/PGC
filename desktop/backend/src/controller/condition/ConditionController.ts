@@ -34,10 +34,17 @@ export class ConditionController {
         },
       });
       if (conditioncheck !== undefined) {
-        return ErrHand("Condition Already exist", 402, response, 2);
+        return ErrHand(
+          "Condition Already exist Use Update API",
+          402,
+          response,
+          2
+        );
       } else {
         if (devicecheck !== undefined) {
           let databuf = body;
+          databuf.temperature.toFixed(2);
+          databuf.humidity.toFixed(2);
           try {
             await this.conditionRepository.save(databuf);
           } catch (error) {
@@ -70,12 +77,12 @@ export class ConditionController {
         if (cari) {
           cari = { ...cari, ...body };
           try {
-            await this.deviceRepository.save(cari);
+            await this.conditionRepository.save(cari);
             return {
-              msg: cari.devices.code_device + " update success",
+              msg: cari.devices + " update success",
             };
           } catch (error) {
-            return ErrHand("Error", 406, response, 2);
+            return ErrHand(error, 406, response, 2);
           }
         } else {
           return ErrHand("Device Code Not Registered", 402, response, 2);

@@ -73,7 +73,7 @@ export class UserController {
           delete data.password;
           let token = data.id;
           return {
-            msg: "Welcome Aboard",
+            msg: "Welcome Aboard " + data.name,
             token: token,
             codehandler: 0,
           };
@@ -90,8 +90,20 @@ export class UserController {
   async finduserbyid(request: Request, response: Response, next: NextFunction) {
     let params = request.params["id"];
     let user = await this.userRepository.findOne({
-      where: { code: params },
+      where: { id: params },
     });
+    if (user) {
+      return {
+        data: user,
+        msg: "Query Successfully",
+      };
+    } else {
+      return ErrHand("Genre not found", 406, response, 1);
+    }
+  }
+
+  async findall(request: Request, response: Response, next: NextFunction) {
+    let user = await this.userRepository.find();
     if (user) {
       return {
         data: user,

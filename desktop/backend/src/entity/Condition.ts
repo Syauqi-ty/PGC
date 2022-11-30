@@ -12,13 +12,13 @@ export class Condition {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: "decimal", precision: 5, scale: 2 })
   temperature: number;
 
   @Column()
   intensity: number;
 
-  @Column()
+  @Column({ type: "decimal", precision: 5, scale: 2 })
   humidity: number;
 
   @OneToOne(() => Devices)
